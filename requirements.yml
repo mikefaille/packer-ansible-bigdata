@@ -1,1 +1,4 @@
 # from github, get recommended os configs for cdh
+- src: https://mikefaille/packer-ansible-bigdata
+  version: master
+  name: trustedanalytics.cdh-configuration
