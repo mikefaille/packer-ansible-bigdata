@@ -1,0 +1,43 @@
+{
+    "variables": {
+        "aws_access_key": "AKIAIWZKJSVTJ2NTI4VA",
+        "aws_secret_key": "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"
+    },
+    "builders": [{
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}",
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "us-east-1",
+        "source_ami": "ami-61bbf104",
+        "instance_type": "t2.micro",
+        "ssh_username": "centos",
+        "ami_name": "packer-example {{timestamp}}",
+        "ssh_pty": "true"
+    }],
+
+
+    "provisioners": [{
+        "type": "shell",
+        "inline": [ "sleep 30 # important because Amazon is building. To get more info see : https://www.cloudera.com/documentation/enterprise/5-4-x/topics/cdh_ig_cdh5_install.html"]
+    }, {
+        "type": "shell",
+        "inline": [
+            "sudo yum -y clean all",
+            "sudo yum -y upgrade",
+            "sudo rpm --import https://getfedora.org/static/352C64E5.txt",
+            "sudo yum -y localinstall https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm",
+            "sudo yum -y install ansible",
+            "sudo ansible-galaxy install trustedanalytics.cdh-configuration"
+
+
+        ]
+    },{
+        "type": "ansible-local",
+        "playbook_file": "site.yml",
+        "role_paths": [
+            "roles/bigdata"
+        ]
+    }
+
+                    ]
+}

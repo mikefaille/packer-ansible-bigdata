@@ -1,0 +1,6 @@
+---
+- hosts: all
+  sudo: yes
+  roles:
+    - role: bigdata
+      # extra_features: ['odl-ovsdb-openstack']
