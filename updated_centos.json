@@ -1,0 +1,41 @@
+{
+    "variables": {
+        "aws_access_key": "AKIAIWZKJSVTJ2NTI4VA",
+        "aws_secret_key": "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"
+    },
+    "builders": [{
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}",
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "us-east-1",
+        "source_ami": "ami-61bbf104",
+        "instance_type": "t2.micro",
+        "ssh_username": "centos",
+        "ami_name": "Big Data Foundation - Updated Centos {{timestamp}}",
+        "ssh_pty": "true"
+    }],
+
+
+    "provisioners": [{
+        "type": "shell",
+        "inline": [ "sleep 25 # important because Amazon is building."]
+    }, {
+        "type": "shell",
+        "inline": [
+            "echo 'The BigData Foundation thanks you to use their home made AMI. Interessed to know more about this foundation ?, goto http://thebigdatafoundation.org/' | sudo tee -a /etc/motd",
+            "sudo yum -y clean all",
+            "sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7",
+            "sudo yum -y install deltarpm",
+            "sudo yum -y upgrade",
+            "sudo sed -i -e 's/^Defaults.*requiretty/# Defaults requiretty/g' /etc/sudoers",
+            "#sed -i 's/enabled=1/enabled=0/g' /etc/yum/pluginconf.d/fastestmirror.conf",
+            "sudo yum -y upgrade",
+            "sudo rpm --import https://getfedora.org/static/352C64E5.txt",
+            "sudo yum -y localinstall https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm",
+            "sudo yum -y install ansible wget git make rpm-build python2-devel asciidoc",
+            "git clone  -b v2.0.1.0-0.2.rc2 --single-branch --depth=1 https://github.com/ansible/ansible.git --recursive",
+            "cd ./ansible;  make rpm; sudo rpm -Uvh ./rpm-build/ansible-*.noarch.rpm; cd  ..; rm -Rf ansible"
+        ]
+    }
+                    ]
+}
