@@ -1,6 +1,12 @@
 ---
 - hosts: all
-  sudo: yes
+  become_method: sudo
+  become_user: root
+  gather_facts: yes
+  name: Rock and roles !
   roles:
-    - role: bigdata
-      # extra_features: ['odl-ovsdb-openstack']
+    - { role: bigdata}
+  tasks:
+    - name: run ansible galaxy
+      local_action: command ansible-galaxy install -r requirements.yml --ignore-errors
+        # extra_features: ['odl-ovsdb-openstack']

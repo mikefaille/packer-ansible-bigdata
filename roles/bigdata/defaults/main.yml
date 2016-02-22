@@ -1,4 +1,6 @@
 ---
 # defaults file for bigdata
- roles:
-    - cdh-configuration
+# - hosts: local
+
+  # roles:
+  #   - cdh-configuration

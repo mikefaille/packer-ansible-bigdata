@@ -1,3 +1,5 @@
 # from github, get recommended os configs for cdh
-- src: https://mikefaille/packer-ansible-bigdata
+- src: https://github.com/mikefaille/packer-ansible-bigdata
+  name: packer-ansible-bigdata
   version: master
+  path: roles/bigdata
