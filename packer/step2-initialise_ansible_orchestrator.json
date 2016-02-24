@@ -12,7 +12,7 @@
         "source_ami": "ami-61bbf104",
         "instance_type": "t2.micro",
         "ssh_username": "centos",
-        "ami_name": "packer-example {{timestamp}}",
+        "ami_name": "Big Data Foundation -  Ready base image to orchestrate  {{timestamp}}",
         "ssh_pty": "true"
     }],
 
@@ -23,15 +23,8 @@
     }, {
         "type": "shell",
         "inline": [
-            "sudo yum -y clean all",
-            "sudo yum -y upgrade",
-            "sudo rpm --import https://getfedora.org/static/352C64E5.txt",
-            "sudo yum -y localinstall https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm",
-            "sudo yum -y install ansible",
-            "sudo ansible-galaxy install -r requirements.yml -vvvv --force",
-            "sudo ansible-galaxy install trustedanalytics.cdh-configuration"
-
-
+            "wget https://raw.githubusercontent.com/mikefaille/packer-ansible-bigdata/master/ansible-static-requirements.yml -O requirements.yml",
+            "sudo ansible-galaxy install -r requirements.yml -vvvv --force"
         ]
     },{
         "type": "ansible-local",
