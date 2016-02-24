@@ -28,6 +28,7 @@
             "sudo rpm --import https://getfedora.org/static/352C64E5.txt",
             "sudo yum -y localinstall https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm",
             "sudo yum -y install ansible",
+            "sudo ansible-galaxy install -r requirements.yml -vvvv --force",
             "sudo ansible-galaxy install trustedanalytics.cdh-configuration"
 
 
