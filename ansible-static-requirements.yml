@@ -1,4 +1,4 @@
-# from github, get recommended os configs for cdh. Note : we must add role in git's root folder.
+# from github, get recommended os configs for cdh. Note : Since we use ansible-galaxy, we must add role in git's root folder.
 - src: https://github.com/mikefaille/ansible-static-requirements-bigdata
   name: packer-ansible-bigdata
   version: master
