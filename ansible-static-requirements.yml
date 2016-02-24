@@ -2,3 +2,4 @@
 - src: https://github.com/mikefaille/ansible-static-requirements-bigdata
   name: ansible-static-requirements-bigdata
   version: master
+  path: roles/ansible-static-requirements-bigdata

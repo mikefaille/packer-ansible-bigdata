@@ -1,0 +1,3 @@
+[submodule "roles/ansible-static-requirements-bigdata"]
+	path = roles/ansible-static-requirements-bigdata
+	url = https://github.com/mikefaille/ansible-static-requirements-bigdata
