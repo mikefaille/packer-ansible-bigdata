@@ -1,0 +1,75 @@
+{
+    "variables": {
+        "access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+        "secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}"
+    },
+    "builders": [{
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}",
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "us-east-1",
+        "source_ami": "ami-61bbf104",
+        "instance_type": "t2.micro",
+        "ssh_username": "centos",
+        "ami_name": "Big Data Foundation - Base Centos {{timestamp}}",
+        "ssh_pty": "true",
+        "ami_block_device_mappings": [
+            {
+                "device_name": "/dev/sda1",
+                "delete_on_termination": false,
+                "no_device": true
+            },
+            {
+                "device_name": "xvdh",
+                "volume_size": 8,
+                "delete_on_termination": false,
+                "volume_type": "standard"
+            }
+        ],
+        "launch_block_device_mappings": [
+            {
+                "device_name": "/dev/sda1",
+                "delete_on_termination": true,
+                "volume_size": 8,
+                "no_device": true
+            },
+            {
+                "device_name": "xvdh",
+                "volume_size": 8,
+                "delete_on_termination": false,
+                "volume_type": "standard"
+            }
+        ]
+    }],
+
+
+    "provisioners": [{
+        "type": "shell",
+        "inline": [ "sleep 25 # important because Amazon is building."]
+    }, {
+        "type": "shell",
+        "inline": [
+            "echo 'The BigData Foundation thanks you to use their home made AMI. Interessed to know more about this foundation ?, goto http://thebigdatafoundation.org/' | sudo tee -a /etc/motd",
+            "sudo rpm --import https://getfedora.org/static/352C64E5.txt",
+            "sudo yum -y localinstall https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm",
+            "sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 && sudo yum -y install util-linux btrfs-progs pv",
+            "ls /dev",
+            "sudo dd if=/dev/xvda of=/dev/xvdh bs=4M",
+            "#sudo parted /dev/xvdh mklabel msdos",
+            "#sudo parted /dev/xvdh mkpart primary 1049kB 100%",
+            "#sudo parted /dev/xvdh set 1 boot on",
+            "#sudo mkfs.btrfs -O skinny-metadata /dev/xvdh1",
+            "sudo btrfs-convert /dev/xvdh1",
+            "sudo mkdir /mnt/ebs",
+            "sudo mount -t btrfs  -o compress=lzo /dev/xvdh1 /mnt/ebs",
+            "sudo btrfs subvol delete /mnt/ebs/ext2_saved",
+            "sudo btrfs fi defrag -r /mnt/ebs",
+            "sudo btrfs subvolume snapshot /mnt/ebs /mnt/ebs/@",
+            "cd /mnt/ebs/ && ls * | grep -v @ | xargs -i sudo rm -R {}",
+            "#sudo rsync --stats --human-readable  -avxAHX --exclude=/mnt/* --delete --progress / /mnt/ebs/root/ | pv -lep -s 48700 > /dev/null" ,
+            "UUID=$(sudo blkid  | grep btrfs | cut -f2  -d \" \"); echo -e \"${UUID}\t/\tbtrfs\trw,relatime,compress=lzo,space_cache,subvol=@\t0 0\" | sudo tee /mnt/ebs/root/etc/fstab",
+            "sudo touch /mnt/ebs/@/etc/.autorelabel"
+        ]
+    }
+                    ]
+}
